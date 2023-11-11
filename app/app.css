@@ -110,11 +110,16 @@ body {
   border-right: solid 1px #e3e3e3;
   display: flex;
   flex-direction: column;
+  max-width: 400px;
+  transition: max-width .1s ease-in-out;
+}
+
+#sidebar.collapsed {
+  max-width: 75px;
 }
 
 #sidebar > * {
-  padding-left: 2rem;
-  padding-right: 2rem;
+  padding: 1rem;
 }
 
 #sidebar h1 {
@@ -143,6 +148,7 @@ body {
   padding-top: 1rem;
   padding-bottom: 1rem;
   border-bottom: 1px solid #e3e3e3;
+  justify-content: space-between;
 }
 
 #sidebar > div form {
@@ -396,4 +402,14 @@ i {
   align-items: center;
   justify-content: center;
   width: 100%;
+}
+
+.hamburgerIcon {
+  height: 20px;
+  width: 20px;
+}
+
+button.hamburgerButton {
+  height: 40px;
+  padding: 10px;
 }

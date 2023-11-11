@@ -13,7 +13,8 @@ import {
   useNavigation,
   useSubmit,
 } from "@remix-run/react";
-import { useEffect } from "react";
+import { Hamburger } from "components/hamburger";
+import { useEffect, useState } from "react";
 
 import appStylesHref from "./app.css";
 
@@ -54,6 +55,8 @@ export default function App() {
     }
   }, [q]);
 
+  const [ collapsed, setCollapsed ] = useState(true);
+
   return (
     <html lang="en">
       <head>
@@ -63,66 +66,78 @@ export default function App() {
         <Links />
       </head>
       <body>
-        <div id="sidebar">
-          <h1>Remix Contacts</h1>
+        <div id="sidebar" className={collapsed ? "collapsed" : ""}>
+          {!collapsed && <h1>Remix Contacts</h1>}
           <div>
-            <Link to="/">
-              <button>Home</button>
-            </Link>
-            <Form 
-              onChange={event => {
-                const isFirstSearch = q === null;
-                submit(event.currentTarget, { replace: !isFirstSearch })
-              }} 
-              id="search-form" 
-              role="search"
-            >
-              <input
-                id="q"
-                aria-label="Search contacts"
-                className={searching ? "loading" : ""}
-                placeholder="Search"
-                type="search"
-                name={InputNames.query}
-                defaultValue={q ?? ""}
-              />
-              <div id="search-spinner" aria-hidden hidden={!searching} />
-            </Form>
-            <Form method="post">
-              <button type="submit">New</button>
-            </Form>
-          </div>
-          <nav>
-            {contacts.length ? (
-              <ul>
-                {contacts.map(contact => (
-                  <li key={contact.id}>
-                    <NavLink
-                      className={({ isActive, isPending }) => (
-                        isActive ? "active" : isPending ? "pending" : ""
-                      )}
-                      to={`contacts/${contact.id}`}
-                    >
-                      {contact.first || contact.last ? (
-                        <>{contact.first} {contact.last}</>
-                      ) : (
-                        <i>No Name</i>
-                      )}
-                      {contact.favorite && <span>★</span>}
-                    </NavLink>
-                  </li>
-                ) )}
-              </ul>
-            ) : (
-              <p>
-                <i>No contacts</i>
-              </p>
+            {!collapsed && (
+              <Link to="/"> 
+                <button>Home</button>
+              </Link>
             )}
-          </nav>
+            <button className="hamburgerButton" onClick={() => setCollapsed(!collapsed)}>
+              <Hamburger />
+            </button>
+          </div>
+          {!collapsed && (
+            <>
+              <div>
+                <Form 
+                  onChange={event => {
+                    const isFirstSearch = q === null;
+                    submit(event.currentTarget, { replace: !isFirstSearch })
+                  }} 
+                  id="search-form" 
+                  role="search"
+                >
+                  <input
+                    id="q"
+                    aria-label="Search contacts"
+                    className={searching ? "loading" : ""}
+                    placeholder="Search"
+                    type="search"
+                    name={InputNames.query}
+                    defaultValue={q ?? ""}
+                  />
+                  <div id="search-spinner" aria-hidden hidden={!searching} />
+                </Form>
+                <Form method="post">
+                  <button type="submit">New</button>
+                </Form>
+              </div>
+              <nav>
+                {contacts.length ? (
+                  <ul>
+                    {contacts.map(contact => (
+                      <li key={contact.id}>
+                        <NavLink
+                          className={({ isActive, isPending }) => (
+                            isActive ? "active" : isPending ? "pending" : ""
+                          )}
+                          to={`contacts/${contact.id}`}
+                        >
+                          {contact.first || contact.last ? (
+                            <>{contact.first} {contact.last}</>
+                          ) : (
+                            <i>No Name</i>
+                          )}
+                          {contact.favorite && <span>★</span>}
+                        </NavLink>
+                      </li>
+                    ))}
+                  </ul>
+                ) : (
+                  <p>
+                    <i>No contacts</i>
+                  </p>
+                )}
+              </nav>
+            </>
+          )}
         </div>
         <div 
           id="detail"
           className={navigation.state === "loading" && !searching ? "loading" : ""}
+          onClick={() => setCollapsed(true)}
         >
           <Outlet />
         </div>
